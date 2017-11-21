@@ -1,9 +1,75 @@
-<div class="row">
-  <div class="col-md-4"><img width="300" src="assets/header.png"></div>
-  Nachricht des Servers
-    <span *ngIf="message!=null && !error">ist: {{message}}</span>
-    <span *ngIf="message!=null && error">konnte nicht ermittelt werden.</span>
-    <span *ngIf="message==null">wurde noch nicht ermittelt.</span>
-    <button (click)="checkInfo()" class="btn btn-primary">Nachricht <span
-      *ngIf="status != null">neu</span> laden</button>
+<div class="container">
+  <div><img width="300" src="assets/header.png">
+  </div>
+  <!-- Liste der Veranstaltungen -->
+  <div class="col-md-10">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3>Veranstaltungen</h3>
+      </div>
+      <div class="panel-body">
+        <button (click)="toggleList()">
+          <span *ngIf="!allEvents">Vergangene Events auch anzeigen</span>
+          <span *ngIf="allEvents">Vergangene Events ausblenden</span>
+        </button>
+        <table class="table table-bordered" *ngIf="events!=null">
+          <tr class="active">
+            <th>Titel</th>
+            <th>Beschreibung</th>
+            <th>Beginn</th>
+            <th></th>
+          </tr>
+          <tr *ngFor="let event of events">
+            <td>{{event.titel}}</td>
+            <td>{{event.beschreibung}}</td>
+            <td>{{event.beginn | date:'yyyy-MM-dd'}}</td>
+            <td><button (click)="load(event.id)">Ändern</button><button (click)="delete(event.id)">Löschen</button></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="col-md-10">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3>Veranstaltung
+          <span *ngIf="event.id==null">anlegen</span>
+          <span *ngIf="event.id!=null">ändern</span>
+        </h3>
+      </div>
+
+      <div class="panel-body">
+        <form>
+          <label for="titel">Titel:</label>
+          <input name="titel" type="text" placeholder="Titel" [(ngModel)]="event.titel" class="form-control" />
+          <label for="beschreibung">Beschreibung:</label>
+          <input name="beschreibung" type="text" placeholder="Beschreibung" [(ngModel)]="event.beschreibung" ng-required="true" class="form-control"
+          />
+          <label for="beginn">Datum:</label>
+          <input [ngModel]="event.beginn | date:'yyyy-MM-dd'" (ngModelChange)="event.beginn = $event" type="date" name="beginn" class="form-control"
+          />
+        </form>
+        <button (click)="createEvent()" class="btn btn-primary" *ngIf="event.id==null">Sichern</button>
+        <button (click)="updateEvent()" class="btn btn-primary" *ngIf="event.id!=null">Sichern</button>
+        <button (click)="reset()" class="btn btn-primary">Zurücksetzen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="col-md-10">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3>Servernachricht</h3>
+      </div>
+      <div class="panel-body">
+        <span *ngIf="info!=null && !error">{{info.message}}</span>
+        <span *ngIf="info!=null && error">konnte Backend nicht erreichen!</span>
+        <span *ngIf="info==null">Lade...</span>
+      </div>
+    </div>
+  </div>
 </div>
